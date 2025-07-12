@@ -4,17 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Pago Seguro</title>
-    <link rel="stylesheet" href="css/styles.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script src="js/main.js" defer></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .card-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        
+        .card-icons img {
+            height: 30px;
+        }
+        
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .row .form-group {
+            flex: 1;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .recaptcha {
+            margin: 20px 0;
+        }
+        
+        .secure-payment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            color: #27ae60;
+            font-size: 14px;
+        }
+        
+        .secure-payment img {
+            height: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Pago Seguro</h1>
         
         <form id="payment-form" action="/procesar-pago" method="POST">
-            <!-- Contenido del formulario igual al ejemplo anterior -->
-            <!-- ... -->
+            <div class="form-group">
+                <label for="card-number">Número de tarjeta</label>
+                <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456" required>
+                <div class="card-icons">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visa/visa-original.svg" alt="Visa">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mastercard/mastercard-original.svg" alt="Mastercard">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg" alt="Apple Pay">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="card-name">Nombre en la tarjeta</label>
+                <input type="text" id="card-name" name="card-name" placeholder="Juan Pérez" required>
+            </div>
+            
+            <div class="row">
+                <div class="form-group">
+                    <label for="expiry-date">Fecha de expiración</label>
+                    <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/AA" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="amount">Monto a pagar</label>
+                <input type="text" id="amount" name="amount" placeholder="$100.00" required>
+            </div>
+            
+            <div class="recaptcha">
+                <!-- Reemplaza 'TU_SITIO_KEY' con tu clave de sitio de reCAPTCHA -->
+                <div class="g-recaptcha" data-sitekey="TU_SITIO_KEY"></div>
+            </div>
+            
+            <button type="submit">Pagar ahora</button>
+            
+            <div class="secure-payment">
+                <img src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Escudo de seguridad">
+                <span>Pago 100% seguro - Todos los datos están encriptados</span>
+            </div>
         </form>
     </div>
 </body>
