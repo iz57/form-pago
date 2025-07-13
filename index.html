@@ -80,7 +80,7 @@
                 <label for="card-number">Número de tarjeta</label>
                 <i class="fas fa-credit-card input-icon"></i>
                 <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456" 
-                       pattern="\d{16}" title="Ingrese 16 dígitos de la tarjeta" required>
+                       pattern="\d{16}" title="Ingrese 16 dígitos de la tarjeta" required maxlength="16">
                 <i class="fas fa-check-circle valid-icon" id="card-valid"></i>
                 <i class="fas fa-times-circle invalid-icon" id="card-invalid"></i>
                 <div class="error-message" id="card-error">Número de tarjeta inválido (16 dígitos requeridos)</div>
