@@ -3,327 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Pago Seguro</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-   <link rel="stylesheet" href="css/style1.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Formulario de Donación</title>
     <style>
-        /* Estilos para el modal personalizado */
-        .custom-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
         }
-        
-        .modal-content {
+        .form-container {
             background-color: white;
             padding: 25px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        .modal-content h2 {
-            color: #4CAF50;
-            margin-top: 0;
-        }
-        
-        .modal-content p {
             margin-bottom: 25px;
         }
-        
-        .modal-buttons {
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .card-details {
             display: flex;
-            justify-content: center;
             gap: 15px;
         }
-        
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        
-        .modal-btn.close {
-            background-color: #f44336;
-            color: white;
-        }
-        
-        .modal-btn.save {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .modal-btn:hover {
-            opacity: 0.9;
+        .card-details .form-group {
+            flex: 1;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Pago Seguro</h1>
-        
-        <form id="payment-form" action="/procesar-pago" method="POST">
+    <div class="form-container">
+        <h1>Formulario de Donación</h1>
+        <form id="donation-form">
             <div class="form-group">
-                <label for="card-number">Número de tarjeta</label>
-                <i class="fas fa-credit-card input-icon"></i>
-                <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456" 
-                       pattern="\d{16}" title="Ingrese 16 dígitos de la tarjeta" required maxlength="16">
-                <i class="fas fa-check-circle valid-icon" id="card-valid"></i>
-                <i class="fas fa-times-circle invalid-icon" id="card-invalid"></i>
-                <div class="error-message" id="card-error">Número de tarjeta inválido (16 dígitos requeridos)</div>
-                <div class="card-icons">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visa/visa-original.svg" alt="Visa">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mastercard/mastercard-original.svg" alt="Mastercard">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg" alt="Apple Pay">
-                </div>
+                <label for="amount">Monto de donación ($)</label>
+                <input type="number" id="amount" name="amount" min="1" max="10000" required>
+                <div class="error" id="amount-error">Por favor ingrese un monto válido (mínimo $1)</div>
             </div>
             
             <div class="form-group">
                 <label for="card-name">Nombre en la tarjeta</label>
-                <i class="fas fa-user input-icon"></i>
-                <input type="text" id="card-name" name="card-name" placeholder="Juan Pérez" 
-                       pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]{3,}$" title="Solo letras y espacios (mínimo 3 caracteres)" required>
-                <i class="fas fa-check-circle valid-icon" id="name-valid"></i>
-                <i class="fas fa-times-circle invalid-icon" id="name-invalid"></i>
-                <div class="error-message" id="name-error">Nombre inválido (solo letras y espacios)</div>
-            </div>
-            
-            <div class="row">
-                <div class="form-group">
-                    <label for="expiry-date">Fecha de expiración</label>
-                    <i class="far fa-calendar-alt input-icon"></i>
-                    <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/AA" 
-                           pattern="^(0[1-9]|1[0-2])\/([0-9]{2})$" title="Formato MM/AA con mes válido (01-12)" required>
-                    <i class="fas fa-check-circle valid-icon" id="expiry-valid"></i>
-                    <i class="fas fa-times-circle invalid-icon" id="expiry-invalid"></i>
-                    <div class="error-message" id="expiry-error">Formato inválido (MM/AA) o fecha expirada</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="cvv">CVV</label>
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="text" id="cvv" name="cvv" placeholder="123" 
-                           pattern="\d{3,4}" title="3 o 4 dígitos del CVV" required>
-                    <i class="fas fa-check-circle valid-icon" id="cvv-valid"></i>
-                    <i class="fas fa-times-circle invalid-icon" id="cvv-invalid"></i>
-                    <div class="error-message" id="cvv-error">CVV inválido (3 o 4 dígitos)</div>
-                </div>
+                <input type="text" id="card-name" name="card-name" maxlength="50" required>
+                <div class="error" id="name-error">Por favor ingrese el nombre como aparece en la tarjeta</div>
             </div>
             
             <div class="form-group">
                 <label for="email">Correo electrónico</label>
-                <i class="fas fa-envelope input-icon"></i>
-                <input type="email" id="email" name="email" placeholder="tu@email.com" required>
-                <i class="fas fa-check-circle valid-icon" id="email-valid"></i>
-                <i class="fas fa-times-circle invalid-icon" id="email-invalid"></i>
-                <div class="error-message" id="email-error">Correo electrónico inválido</div>
+                <input type="email" id="email" name="email" maxlength="100" required>
+                <div class="error" id="email-error">Por favor ingrese un correo electrónico válido</div>
             </div>
             
             <div class="form-group">
-                <label for="amount">Monto a pagar</label>
-                <i class="fas fa-dollar-sign input-icon"></i>
-                <input type="text" id="amount" name="amount" placeholder="100.00" 
-                       pattern="^\d+(\.\d{1,2})?$" title="Formato de moneda válido (ej. 100 o 100.50)" required>
-                <i class="fas fa-check-circle valid-icon" id="amount-valid"></i>
-                <i class="fas fa-times-circle invalid-icon" id="amount-invalid"></i>
-                <div class="error-message" id="amount-error">Monto inválido (ej. 100 o 100.50)</div>
+                <label for="card-number">Número de tarjeta</label>
+                <input type="text" id="card-number" name="card-number" maxlength="16" pattern="[0-9]{16}" required>
+                <div class="error" id="card-error">Por favor ingrese un número de tarjeta válido (16 dígitos)</div>
             </div>
             
-            <button type="submit" id="pay-button">Pagar ahora</button>
-            
-            <div class="secure-payment">
-                <img src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Escudo de seguridad">
-                <span>Pago 100% seguro - Todos los datos están encriptados</span>
+            <div class="card-details">
+                <div class="form-group">
+                    <label for="expiry-date">Fecha de expiración (MM/AA)</label>
+                    <input type="text" id="expiry-date" name="expiry-date" maxlength="5" placeholder="MM/AA" required>
+                    <div class="error" id="expiry-error">Formato inválido (use MM/AA)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" maxlength="3" pattern="[0-9]{3}" required>
+                    <div class="error" id="cvv-error">CVV debe tener 3 dígitos</div>
+                </div>
             </div>
+            
+            <button type="submit">Realizar Donación</button>
         </form>
     </div>
 
-    <!-- Modal de donación exitosa -->
-    <div id="success-modal" class="custom-modal">
-        <div class="modal-content">
-            <h2>¡Donación Exitosa!</h2>
-            <p>Gracias por tu donación. Tu transacción se ha completado correctamente.</p>
-            <div class="modal-buttons">
-                <button class="modal-btn close" id="close-modal">Cerrar</button>
-                <button class="modal-btn save" id="save-receipt">Guardar comprobante</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Validación en tiempo real para todos los campos
-            const inputs = document.querySelectorAll('input');
-            const successModal = document.getElementById('success-modal');
-            const closeModalBtn = document.getElementById('close-modal');
-            const saveReceiptBtn = document.getElementById('save-receipt');
+        document.getElementById('donation-form').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    validateField(this);
-                });
-                
-                input.addEventListener('blur', function() {
-                    validateField(this);
-                });
-            });
+            // Reset errores
+            document.querySelectorAll('.error').forEach(el => el.style.display = 'none');
             
-            function validateField(field) {
-                const fieldId = field.id;
-                let isValid = false;
-                
-                if (field.value === '') {
-                    // Campo vacío, ocultar iconos de validación
-                    document.getElementById(`${fieldId}-valid`).style.display = 'none';
-                    document.getElementById(`${fieldId}-invalid`).style.display = 'none';
-                    document.getElementById(`${fieldId}-error`).style.display = 'none';
-                    return;
-                }
-                
-                // Validación especial para el nombre (no números)
-                if (fieldId === 'card-name') {
-                    isValid = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]{3,}$/.test(field.value);
-                    field.setCustomValidity(isValid ? '' : 'Solo letras y espacios (mínimo 3 caracteres)');
-                } 
-                // Validación especial para fecha de expiración
-                else if (fieldId === 'expiry-date') {
-                    isValid = validateExpiryDate(field.value);
-                    field.setCustomValidity(isValid ? '' : 'Formato MM/AA con mes válido (01-12) y año no expirado');
-                } 
-                // Validación estándar para otros campos
-                else {
-                    isValid = field.checkValidity();
-                }
-                
-                if (isValid) {
-                    document.getElementById(`${fieldId}-valid`).style.display = 'block';
-                    document.getElementById(`${fieldId}-invalid`).style.display = 'none';
-                    document.getElementById(`${fieldId}-error`).style.display = 'none';
-                } else {
-                    document.getElementById(`${fieldId}-valid`).style.display = 'none';
-                    document.getElementById(`${fieldId}-invalid`).style.display = 'block';
-                    document.getElementById(`${fieldId}-error`).style.display = 'block';
-                }
-                
-                // Validación especial para el número de tarjeta (formato con espacios)
-                if (fieldId === 'card-number') {
-                    formatCardNumber(field);
-                }
-                
-                // Validación especial para fecha de expiración (agregar / automáticamente)
-                if (fieldId === 'expiry-date') {
-                    formatExpiryDate(field);
-                }
+            let isValid = true;
+            
+            // Validar monto
+            const amount = document.getElementById('amount').value;
+            if (!amount || amount < 1) {
+                document.getElementById('amount-error').style.display = 'block';
+                isValid = false;
             }
             
-            function validateExpiryDate(dateStr) {
-                // Verificar el formato básico
-                if (!/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(dateStr)) {
-                    return false;
-                }
-                
-                const [month, year] = dateStr.split('/');
-                const currentYear = new Date().getFullYear() % 100;
-                const currentMonth = new Date().getMonth() + 1;
-                const inputYear = parseInt(year, 10);
-                const inputMonth = parseInt(month, 10);
-                
-                // Verificar que el año no sea más de 20 años en el futuro
-                if (inputYear > (currentYear + 20)) {
-                    return false;
-                }
-                
-                // Verificar si la tarjeta ya expiró
-                if (inputYear < currentYear || 
-                    (inputYear === currentYear && inputMonth < currentMonth)) {
-                    return false;
-                }
-                
-                return true;
+            // Validar nombre
+            const name = document.getElementById('card-name').value;
+            if (!name || name.length < 3) {
+                document.getElementById('name-error').style.display = 'block';
+                isValid = false;
             }
             
-            function formatCardNumber(field) {
-                // Eliminar todos los espacios existentes
-                let value = field.value.replace(/\s/g, '');
-                
-                // Agregar un espacio cada 4 dígitos
-                value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-                
-                // Actualizar el valor del campo
-                field.value = value.trim();
-                
-                // Validar longitud (16 dígitos sin contar los espacios)
-                const isValid = value.replace(/\s/g, '').length === 16;
-                field.setCustomValidity(isValid ? '' : 'Ingrese 16 dígitos de la tarjeta');
+            // Validar email
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('email-error').style.display = 'block';
+                isValid = false;
             }
             
-            function formatExpiryDate(field) {
-                let value = field.value.replace(/\D/g, '');
-                
-                if (value.length > 2) {
-                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                }
-                
-                field.value = value;
+            // Validar tarjeta
+            const cardNumber = document.getElementById('card-number').value;
+            if (!cardNumber || cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+                document.getElementById('card-error').style.display = 'block';
+                isValid = false;
             }
             
-            // Validar el formulario antes de enviar
-            document.getElementById('payment-form').addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevenimos el envío real del formulario
-                
-                let isValid = true;
-                
-                inputs.forEach(input => {
-                    validateField(input);
-                    if (input.id === 'card-name' && !/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]{3,}$/.test(input.value)) {
-                        isValid = false;
-                    } else if (input.id === 'expiry-date' && !validateExpiryDate(input.value)) {
-                        isValid = false;
-                    } else if (!input.checkValidity()) {
-                        isValid = false;
-                    }
-                });
-                
-                if (isValid) {
-                    // Mostrar el modal de éxito
-                    successModal.style.display = 'flex';
-                } else {
-                    alert('Por favor complete todos los campos correctamente.');
-                }
-            });
+            // Validar fecha expiración
+            const expiryDate = document.getElementById('expiry-date').value;
+            const expiryRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+            if (!expiryRegex.test(expiryDate)) {
+                document.getElementById('expiry-error').style.display = 'block';
+                isValid = false;
+            }
             
-            // Eventos para los botones del modal
-            closeModalBtn.addEventListener('click', function() {
-                successModal.style.display = 'none';
-            });
+            // Validar CVV
+            const cvv = document.getElementById('cvv').value;
+            if (!cvv || cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+                document.getElementById('cvv-error').style.display = 'block';
+                isValid = false;
+            }
             
-            saveReceiptBtn.addEventListener('click', function() {
-                alert('Comprobante guardado exitosamente');
-                successModal.style.display = 'none';
-                
-                // Aquí podrías agregar lógica para realmente guardar el comprobante
-                // Por ejemplo, generar un PDF o enviar por correo
-            });
-            
-            // Cerrar modal al hacer clic fuera del contenido
-            successModal.addEventListener('click', function(e) {
-                if (e.target === successModal) {
-                    successModal.style.display = 'none';
-                }
-            });
+            if (isValid) {
+                alert('¡Donación realizada con éxito! Gracias por su contribución.');
+                this.reset();
+            }
+        });
+
+        // Formatear fecha de expiración
+        document.getElementById('expiry-date').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
         });
     </script>
 </body>
