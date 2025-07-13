@@ -8,7 +8,67 @@
    <link rel="stylesheet" href="css/style1.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
- 
+        /* Estilos para el modal personalizado */
+        .custom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .modal-content h2 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        
+        .modal-content p {
+            margin-bottom: 25px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .modal-btn.close {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .modal-btn.save {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .modal-btn:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -82,7 +142,7 @@
                 <div class="error-message" id="amount-error">Monto inválido (ej. 100 o 100.50)</div>
             </div>
             
-            <button type="submit">Pagar ahora</button>
+            <button type="submit" id="pay-button">Pagar ahora</button>
             
             <div class="secure-payment">
                 <img src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Escudo de seguridad">
@@ -91,10 +151,25 @@
         </form>
     </div>
 
+    <!-- Modal de donación exitosa -->
+    <div id="success-modal" class="custom-modal">
+        <div class="modal-content">
+            <h2>¡Donación Exitosa!</h2>
+            <p>Gracias por tu donación. Tu transacción se ha completado correctamente.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn close" id="close-modal">Cerrar</button>
+                <button class="modal-btn save" id="save-receipt">Guardar comprobante</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Validación en tiempo real para todos los campos
             const inputs = document.querySelectorAll('input');
+            const successModal = document.getElementById('success-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            const saveReceiptBtn = document.getElementById('save-receipt');
             
             inputs.forEach(input => {
                 input.addEventListener('input', function() {
@@ -166,6 +241,8 @@
             
             // Validar el formulario antes de enviar
             document.getElementById('payment-form').addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevenimos el envío real del formulario
+                
                 let isValid = true;
                 
                 inputs.forEach(input => {
@@ -175,9 +252,31 @@
                     }
                 });
                 
-                if (!isValid) {
-                    e.preventDefault();
+                if (isValid) {
+                    // Mostrar el modal de éxito
+                    successModal.style.display = 'flex';
+                } else {
                     alert('Por favor complete todos los campos correctamente.');
+                }
+            });
+            
+            // Eventos para los botones del modal
+            closeModalBtn.addEventListener('click', function() {
+                successModal.style.display = 'none';
+            });
+            
+            saveReceiptBtn.addEventListener('click', function() {
+                alert('Comprobante guardado exitosamente');
+                successModal.style.display = 'none';
+                
+                // Aquí podrías agregar lógica para realmente guardar el comprobante
+                // Por ejemplo, generar un PDF o enviar por correo
+            });
+            
+            // Cerrar modal al hacer clic fuera del contenido
+            successModal.addEventListener('click', function(e) {
+                if (e.target === successModal) {
+                    successModal.style.display = 'none';
                 }
             });
         });
